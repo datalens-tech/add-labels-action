@@ -2,26 +2,63 @@ name: "Add Labels Action"
 description: "add-labels-action"
 
 inputs:
-  placeholder:
-    description: "Placeholder input to be replaced by real inputs"
-    required: true
-    default: "placeholder"
-
-outputs:
-  placeholder:
-    description: "Placeholder output to be replaced by real outputs"
-    value: ${{steps.placeholder.outputs.placeholder }}
+  github_owner:
+    description: "Owner of the repository"
+    default: ${{ github.repository_owner }}
+  github_repo:
+    description: "Repository name"
+    default: ${{ github.event.repository.name }}
+  github_token:
+    description: "GitHub token"
+    default: ${{ github.token }}
+  github_pr_number:
+    description: "GitHub PR number"
+    default: ${{ github.event.pull_request.number }}
+  github_pr_title:
+    description: "GitHub PR title"
+    default: ${{ github.event.pull_request.title }}
 
 runs:
   using: "composite"
   steps:
-    - name: Placeholder
-      id: placeholder
+    - name: Get current labels from PR
+      id: get_labels
       shell: bash
-      run: |
-        echo "::set-output name=placeholder::${{ inputs.placeholder }}"
+      working-directory: src/labels
+      run: ./get.sh
+      env:
+        GITHUB_REPOSITORY: ${{ inputs.github_owner }}/${{ inputs.github_repo }}
+        GITHUB_ISSUE_NUMBER: ${{ inputs.github_pr_number }}
+        GH_TOKEN: ${{ inputs.github_token }}
 
-# https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#branding
+    - name: Construct labels to add/delete
+      id: construct_labels
+      working-directory: .github/.scripts
+      shell: bash
+      run: ./construct_labels.sh
+      env:
+        REPO: ${{ inputs.github_owner }}/${{ inputs.github_repo }}
+        PR_NUMBER: ${{ inputs.github_pr_number }}
+        PR_TITLE: ${{ inputs.github_pr_title }}
+        GH_TOKEN: ${{ inputs.github_token }}
+        CURRENT_LABELS: ${{ steps.get_labels.outputs.labels }}
+
+    - name: Add labels
+      shell: bash
+      working-directory: src/labels
+      run: ./set.sh
+      env:
+        LABELS: ${{ steps.construct_labels.outputs.labels_to_add }}
+
+    - name: Delete labels
+      shell: bash
+      run: gh pr edit $PR_NUMBER --repo $REPO --remove-label $LABELS_TO_DELETE
+      env:
+        LABELS_TO_DELETE: ${{ steps.construct_labels.outputs.labels_to_delete }}
+        PR_NUMBER: ${{ inputs.github_pr_number }}
+        REPO: ${{ inputs.github_owner }}/${{ inputs.github_repo }}
+        GH_TOKEN: ${{ inputs.github_token }}
+
 branding:
   icon: "message-square"
   color: "gray-dark"

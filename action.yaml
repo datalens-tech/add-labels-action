@@ -45,8 +45,39 @@ runs:
 
     - name: Add labels
       shell: bash
+<<<<<<< HEAD
       working-directory: src/labels
       run: ./set.sh
+=======
+      run: |
+        LABELS_TO_ADD=$( echo "${{ steps.get_labels.outputs.labels_to_add }}" | tr ' ' ',')
+        echo LABELS_TO_ADD=$LABELS_TO_ADD
+
+        gh pr edit $PR_NUMBER --repo $REPO --add-label $LABELS_TO_ADD
+
+        CURRENT_PR_LABELS=$(gh pr view $PR_NUMBER --repo $REPO --json labels | jq -r '.labels[].name')
+        LABELS_TO_DELETE=""
+
+        echo CURRENT_PR_LABELS=$CURRENT_PR_LABELS
+
+        for cur_label in $CURRENT_PR_LABELS
+        do
+            if ! [[ $LABELS_TO_ADD == *$cur_label* ]]; then
+                if [[ $cur_label == *type/* || $cur_label == *component/* ]]; then
+                  LABELS_TO_DELETE+=$cur_label,
+                fi
+            fi
+        done
+
+        LABELS_TO_DELETE=$(echo $LABELS_TO_DELETE | rev | cut -c2- | rev)
+
+        echo LABELS_TO_DELETE=$LABELS_TO_DELETE
+
+        if [ -n "$LABELS_TO_DELETE" ]; then
+            gh pr edit $PR_NUMBER --repo $REPO --remove-label $LABELS_TO_DELETE
+        fi
+
+>>>>>>> 241d7e8 (lets move this out to another step)
       env:
         LABELS: ${{ steps.construct_labels.outputs.labels_to_add }}
 

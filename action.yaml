@@ -24,8 +24,7 @@ runs:
     - name: Get current labels from PR
       id: get_labels
       shell: bash
-      working-directory: src/labels
-      run: ./get.sh
+      run: src/labels/get.sh
       env:
         REPO: ${{ inputs.github_owner }}/${{ inputs.github_repo }}
         PR_NUMBER: ${{ inputs.github_pr_number }}
@@ -33,9 +32,8 @@ runs:
 
     - name: Construct labels to add/delete
       id: construct_labels
-      working-directory: .github/.scripts
       shell: bash
-      run: ./construct_labels.sh
+      run: .github/.scripts/construct_labels.sh
       env:
         REPO: ${{ inputs.github_owner }}/${{ inputs.github_repo }}
         PR_NUMBER: ${{ inputs.github_pr_number }}
@@ -45,7 +43,6 @@ runs:
 
     - name: Add labels
       shell: bash
-      working-directory: src/labels
       run: gh pr edit $PR_NUMBER --repo $REPO --add-label $LABELS_TO_ADD
       env:
         LABELS_TO_ADD: ${{ steps.construct_labels.outputs.labels_to_add }}

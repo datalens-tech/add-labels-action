@@ -7,5 +7,5 @@ fi
 
 gh api \
     --method PUT \
-    "repos/$GITHUB_REPOSITORY/issues/$GITHUB_ISSUE_NUMBER/labels" \
+    "repos/$REPO/issues/$PR_NUMBER/labels" \
     --input <(jq -n --compact-output --arg labels "$LABELS" '{"labels": $labels | split(",")}')

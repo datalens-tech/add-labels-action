@@ -6,6 +6,7 @@ on:
       - opened
       - reopened
       - synchronize
+      - edited
 
 jobs:
   e2e-default:
@@ -22,34 +23,34 @@ jobs:
       - name: Set labels
         run: ./src/labels/set.sh
         env:
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_ISSUE_NUMBER: ${{ github.event.number }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          LABELS: "component/auth,component/docs"
+          LABELS: "type/fix,type/feat,component/embeds,component/auth,component/docs,bug"
 
       - name: Test Run
         id: test-run
         uses: ./
         with:
-          placeholder: "test_placeholder"
+          github_pr_title: "fix(docs, auth): test 123 mne grustno v shkole nevkusnaya kapusta"
 
       - name: Get labels
         id: get-labels
         run: ./src/labels/get.sh
         env:
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_ISSUE_NUMBER: ${{ github.event.number }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Assert placeholder
         uses: nick-fields/assert-action@v2
         with:
           actual: ${{ steps.get-labels.outputs.labels }}
-          expected: "component/auth,component/docs"
+          expected: "bug,component/auth,component/docs,type/fix"
 
       - name: Delete all labels
         run: ./src/labels/delete_all.sh
         env:
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_ISSUE_NUMBER: ${{ github.event.number }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

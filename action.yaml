@@ -33,28 +33,25 @@ runs:
     - name: Construct labels to add/delete
       id: construct_labels
       shell: bash
-      run: ${{ github.action_path }}/.github/.scripts/construct_labels.sh
+      run: ${{ github.action_path }}/src/construct_labels.sh
       env:
-        REPO: ${{ inputs.github_owner }}/${{ inputs.github_repo }}
-        PR_NUMBER: ${{ inputs.github_pr_number }}
         PR_TITLE: ${{ inputs.github_pr_title }}
-        GH_TOKEN: ${{ inputs.github_token }}
         CURRENT_LABELS: ${{ steps.get_labels.outputs.labels }}
 
     - name: Add labels
       shell: bash
-      run: gh pr edit $PR_NUMBER --repo $REPO --add-label $LABELS_TO_ADD
+      run: ${{ github.action_path }}/src/labels/add_multiple.sh
       env:
-        LABELS_TO_ADD: ${{ steps.construct_labels.outputs.labels_to_add }}
+        LABELS: ${{ steps.construct_labels.outputs.labels_to_add }}
         REPO: ${{ inputs.github_owner }}/${{ inputs.github_repo }}
         PR_NUMBER: ${{ inputs.github_pr_number }}
         GH_TOKEN: ${{ inputs.github_token }}
 
     - name: Delete labels
       shell: bash
-      run: gh pr edit $PR_NUMBER --repo $REPO --remove-label $LABELS_TO_DELETE
+      run: ${{ github.action_path }}/src/labels/delete_multiple.sh
       env:
-        LABELS_TO_DELETE: ${{ steps.construct_labels.outputs.labels_to_delete }}
+        LABELS: ${{ steps.construct_labels.outputs.labels_to_delete }}
         PR_NUMBER: ${{ inputs.github_pr_number }}
         REPO: ${{ inputs.github_owner }}/${{ inputs.github_repo }}
         GH_TOKEN: ${{ inputs.github_token }}

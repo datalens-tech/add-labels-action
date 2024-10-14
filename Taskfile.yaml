@@ -30,21 +30,14 @@ tasks:
   lint:
     desc: Lint project
     cmds:
-      - echo 'Running prettier checks...'
-      - task: _prettier
-        vars: { COMMAND: "--check ." }
+      - task: _with_nvm
+        vars: { COMMAND: "npm run lint:check" }
 
   lint-fix:
     desc: Lint fix project
     cmds:
-      - echo 'Running prettier fixes...'
-      - task: _prettier
-        vars: { COMMAND: "--write ." }
-
-  test:
-    desc: Test project
-    cmds:
-      - echo 'Running tests...'
+      - task: _with_nvm
+        vars: { COMMAND: "npm run lint:fix" }
 
   clean:
     desc: Clean project environment
@@ -73,11 +66,9 @@ tasks:
         --output-dir ../
         {{.TEMPLATE_PATH}}
         project_name="add-labels-action"
-        project_slug="add-labels-action"
+        marketplace_name="Add Labels Action"
+        action_type="composite"
         node_version="v21.5.0"
-        owner_name="datalens-tech"
-        owner_github_login="datalens-tech"
-        scripts="false"
-        services=""
+        github_owner="datalens-tech"
     vars:
-      TEMPLATE_PATH: '{{.TEMPLATE_PATH | default "https://github.com/ovsds/template-repository"}}'
+      TEMPLATE_PATH: '{{.TEMPLATE_PATH | default "https://github.com/ovsds/template-repository-github-action"}}'

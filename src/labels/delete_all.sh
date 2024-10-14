@@ -2,4 +2,4 @@
 
 gh api \
     --method DELETE \
-    "repos/$GITHUB_REPOSITORY/issues/$GITHUB_ISSUE_NUMBER/labels"
+    "repos/$REPO/issues/$PR_NUMBER/labels"

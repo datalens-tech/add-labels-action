@@ -3,8 +3,8 @@
 labels=$(
     gh api \
         --method GET \
-        "repos/$GITHUB_REPOSITORY/issues/$GITHUB_ISSUE_NUMBER/labels" | \
-    jq -r '.[] | .name' | tr '\n' ',' | sed 's/,$//'
+        "repos/$REPO/issues/$PR_NUMBER/labels" | \
+    jq -r '.[] | .name' | sort | tr '\n' ',' | sed 's/,$//'
 )
 
 echo "labels=$labels" >> $GITHUB_OUTPUT

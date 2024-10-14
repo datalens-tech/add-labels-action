@@ -27,8 +27,8 @@ runs:
       working-directory: src/labels
       run: ./get.sh
       env:
-        GITHUB_REPOSITORY: ${{ inputs.github_owner }}/${{ inputs.github_repo }}
-        GITHUB_ISSUE_NUMBER: ${{ inputs.github_pr_number }}
+        REPO: ${{ inputs.github_owner }}/${{ inputs.github_repo }}
+        PR_NUMBER: ${{ inputs.github_pr_number }}
         GH_TOKEN: ${{ inputs.github_token }}
 
     - name: Construct labels to add/delete
@@ -46,9 +46,12 @@ runs:
     - name: Add labels
       shell: bash
       working-directory: src/labels
-      run: ./set.sh
+      run: gh pr edit $PR_NUMBER --repo $REPO --add-label $LABELS_TO_ADD
       env:
-        LABELS: ${{ steps.construct_labels.outputs.labels_to_add }}
+        LABELS_TO_ADD: ${{ steps.construct_labels.outputs.labels_to_add }}
+        REPO: ${{ inputs.github_owner }}/${{ inputs.github_repo }}
+        PR_NUMBER: ${{ inputs.github_pr_number }}
+        GH_TOKEN: ${{ inputs.github_token }}
 
     - name: Delete labels
       shell: bash

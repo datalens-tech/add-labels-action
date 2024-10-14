@@ -18,6 +18,10 @@
     ]
   },
   "scripts": {
+    "lint:check": "npm run lint:check:prettier",
+    "lint:check:prettier": "prettier --check .",
+    "lint:fix": "npm run lint:fix:prettier",
+    "lint:fix:prettier": "prettier --write .",
     "prepare": "husky"
   }
 }

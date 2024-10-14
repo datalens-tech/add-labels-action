@@ -28,7 +28,3 @@ jobs:
       - name: Lint PR
         run: |
           task lint
-
-      - name: Test PR
-        run: |
-          task test

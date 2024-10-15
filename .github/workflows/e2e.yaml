@@ -6,7 +6,6 @@ on:
       - opened
       - reopened
       - synchronize
-      - edited
 
 jobs:
   e2e-default:

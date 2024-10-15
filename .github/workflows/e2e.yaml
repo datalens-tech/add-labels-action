@@ -64,3 +64,42 @@ jobs:
           REPO: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  e2e-no-labels:
+    runs-on: ubuntu-20.04
+    needs: e2e-default
+
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Test Run
+        id: test-run
+        uses: ./
+        with:
+          github_pr_title: "fix: esli b mishki bili b pchelami"
+
+      - name: Get labels
+        id: get-labels
+        run: ./src/labels/get.sh
+        env:
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.number }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Assert placeholder
+        uses: nick-fields/assert-action@v2
+        with:
+          actual: ${{ steps.get-labels.outputs.labels }}
+          expected: |
+            type/fix
+
+      - name: Delete all labels
+        run: ./src/labels/delete_all.sh
+        env:
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.number }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,4 +1,4 @@
-# add-labels-action
+# Add Labels Action
 
 [![CI](https://github.com/datalens-tech/add-labels-action/workflows/Check%20PR/badge.svg)](https://github.com/datalens-tech/add-labels-action/actions?query=workflow%3A%22%22Check+PR%22%22)
 [![GitHub Marketplace](https://img.shields.io/badge/Marketplace-Add%20Labels%20Action-blue.svg)](https://github.com/marketplace/actions/add-labels-action)
@@ -49,8 +49,8 @@ None
 
 ### Global dependencies
 
-- nvm
-- node
+- [Taskfile](https://taskfile.dev/installation/)
+- [nvm](https://github.com/nvm-sh/nvm?tab=readme-ov-file#install--update-script)
 
 ### Taskfile commands
 

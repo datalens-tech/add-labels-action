@@ -65,10 +65,12 @@ tasks:
         --overwrite-if-exists
         --output-dir ../
         {{.TEMPLATE_PATH}}
-        project_name="add-labels-action"
-        marketplace_name="Add Labels Action"
-        action_type="composite"
-        node_version="v21.5.0"
-        github_owner="datalens-tech"
+        project_name='Add Labels Action'
+        project_slug='add-labels-action'
+        marketplace_name='Add Labels Action'
+        action_type='composite'
+        node_version='v21.5.0'
+        owner_name='datalens-tech'
+        owner_github_login='datalens-tech'
     vars:
       TEMPLATE_PATH: '{{.TEMPLATE_PATH | default "https://github.com/ovsds/template-repository-github-action"}}'

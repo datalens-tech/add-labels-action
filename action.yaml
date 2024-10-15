@@ -1,5 +1,5 @@
 name: "Add Labels Action"
-description: "add-labels-action"
+description: "Adds `type/...` and `component/...` labels by PR title using commitlint format and custom config."
 
 inputs:
   github_owner:
@@ -57,5 +57,5 @@ runs:
         GH_TOKEN: ${{ inputs.github_token }}
 
 branding:
-  icon: "message-square"
+  icon: "tag"
   color: "gray-dark"

@@ -5,7 +5,7 @@ set -euo pipefail
 # shellcheck source=src/common.sh
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
-CURRENT_LABELS=${CURRENT_LABELS}
+CURRENT_LABELS="${CURRENT_LABELS:-""}"
 PR_TITLE=${PR_TITLE}
 
 CONFIG_JSON="https://raw.githubusercontent.com/datalens-tech/datalens/main/.github/workflows/scripts/changelog/changelog_config.json"
@@ -14,7 +14,9 @@ CONFIG_DATA=$(curl -s "$CONFIG_JSON")
 TYPE_LABELS_PREFIX=$(echo "$CONFIG_DATA" | jq -r '.section_tags.prefix')
 COMPONENT_LABELS_PREFIX=$(echo "$CONFIG_DATA" | jq -r '.component_tags.prefix')
 
-CURRENT_LABELS=$(echo "${CURRENT_LABELS}" | grep -E "$TYPE_LABELS_PREFIX|$COMPONENT_LABELS_PREFIX" | sort)
+if [[ -n $CURRENT_LABELS ]]; then
+    CURRENT_LABELS=$(echo "$CURRENT_LABELS" | grep -E "$TYPE_LABELS_PREFIX|$COMPONENT_LABELS_PREFIX" | sort)
+fi
 
 LABELS_SECTION=${PR_TITLE%%:*}
 COMMIT_TYPE=${LABELS_SECTION%%\(*}

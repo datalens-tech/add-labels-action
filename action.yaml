@@ -41,6 +41,7 @@ runs:
     - name: Add labels
       shell: bash
       run: ${{ github.action_path }}/src/labels/add_multiple.sh
+      if: ${{ steps.construct_labels.outputs.labels_to_add != '' }}
       env:
         LABELS: ${{ steps.construct_labels.outputs.labels_to_add }}
         REPO: ${{ inputs.github_owner }}/${{ inputs.github_repo }}
@@ -50,6 +51,7 @@ runs:
     - name: Delete labels
       shell: bash
       run: ${{ github.action_path }}/src/labels/delete_multiple.sh
+      if: ${{ steps.construct_labels.outputs.labels_to_delete != '' }}
       env:
         LABELS: ${{ steps.construct_labels.outputs.labels_to_delete }}
         PR_NUMBER: ${{ inputs.github_pr_number }}

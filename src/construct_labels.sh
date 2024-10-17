@@ -6,6 +6,7 @@ set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
 CURRENT_LABELS="${CURRENT_LABELS:-""}"
+OTHER_LABELS=""
 PR_TITLE=${PR_TITLE}
 
 CONFIG_JSON="https://raw.githubusercontent.com/datalens-tech/datalens/main/.github/workflows/scripts/changelog/changelog_config.json"
@@ -15,6 +16,7 @@ TYPE_LABELS_PREFIX=$(echo "$CONFIG_DATA" | jq -r '.section_tags.prefix')
 COMPONENT_LABELS_PREFIX=$(echo "$CONFIG_DATA" | jq -r '.component_tags.prefix')
 
 if [[ -n $CURRENT_LABELS ]]; then
+    OTHER_LABELS=$(echo "$CURRENT_LABELS" | grep -Ev "$TYPE_LABELS_PREFIX|$COMPONENT_LABELS_PREFIX" | sort)
     CURRENT_LABELS=$(echo "$CURRENT_LABELS" | grep -E "$TYPE_LABELS_PREFIX|$COMPONENT_LABELS_PREFIX" | sort)
 fi
 
@@ -29,8 +31,7 @@ if [[ -n $COMPONENT_SECTION ]]; then
     LABELS_TO_ADD+="\n$COMMIT_COMPONENTS"
 fi
 
+LABELS_TO_ADD+="\n$OTHER_LABELS"
 LABELS_TO_ADD=$(echo -e "$LABELS_TO_ADD" | sort)
-LABELS_TO_DELETE=$(comm -13 <(echo "$LABELS_TO_ADD") <(echo "$CURRENT_LABELS"))
 
 set_output "labels_to_add" "$LABELS_TO_ADD"
-set_output "labels_to_delete" "$LABELS_TO_DELETE"

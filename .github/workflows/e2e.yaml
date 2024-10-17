@@ -27,6 +27,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LABELS: |
             bug
+            duplicate
             type/fix
             type/feat
             component/embeds
@@ -55,6 +56,7 @@ jobs:
             bug
             component/auth
             component/docs
+            duplicate
             type/fix
 
       - name: Delete all labels

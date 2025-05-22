@@ -21,6 +21,9 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Setup gh tool
+      uses: actions4gh/setup-gh@v1
+
     - name: Get current labels from PR
       id: get_labels
       shell: bash

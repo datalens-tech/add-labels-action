@@ -21,6 +21,10 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Setup gh tool
+      shell: bash
+      run: ${{ github.action_path }}/src/setup_gh.sh
+
     - name: Get current labels from PR
       id: get_labels
       shell: bash
